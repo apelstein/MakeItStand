@@ -6,10 +6,7 @@ public class MakeItStandService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        main(args);
+        System.out.println("Hello");
     }
 
-    public static void main(String[] args) {
-        System.out.println("HELLO WORLD");
-    }
 }
