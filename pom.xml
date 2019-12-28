@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>MakeItStandModule</artifactId>
+    <groupId>EthgarGilad</groupId>
+    <artifactId>MakeItStand</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
+            <version>1.18.10</version>
         </dependency>
 
     </dependencies>
