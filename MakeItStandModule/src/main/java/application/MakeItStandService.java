@@ -11,6 +11,7 @@ public class MakeItStandService implements CommandLineRunner {
 
     private FindShell findShell;
     private Set<Voxel> shell;
+    private ArrayList<Voxel> voxels;
 
     public ArrayList<Voxel> createVoxelsFromXyzFile(String xyzFile) throws IOException {
         ArrayList<Voxel> arrayList = new ArrayList<>();
@@ -25,15 +26,22 @@ public class MakeItStandService implements CommandLineRunner {
         return arrayList;
     }
 
+    public void writeVoxelsToFile(String fileName) throws IOException {
+        Files.write(Paths.get(fileName), (Iterable<? extends CharSequence>) voxels); //StandardCharsets.UTF_8
+
+    }
+
         @Override
     public void run(String... args) throws Exception {
         System.out.println("Hello");
-        ArrayList<Voxel> voxels = createVoxelsFromXyzFile("./files/test1.xyz");
+        this.voxels = createVoxelsFromXyzFile("./files/test1.xyz");
         voxels.forEach(voxel -> {
             System.out.println(voxel);
         });
         this.findShell = new FindShell(voxels);
         this.shell = this.findShell.getShell();
+
+        this.writeVoxelsToFile("voxelsEdges");
     }
 
 }

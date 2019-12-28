@@ -50,4 +50,9 @@ public class Voxel {
         }
         return -1;
     }
+
+    @Override
+    public String toString(){
+        return x + " " + y + " " + z + "\n";
+    }
 }
