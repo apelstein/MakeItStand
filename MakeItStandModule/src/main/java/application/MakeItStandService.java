@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 
 public class MakeItStandService implements CommandLineRunner {
 
+    private FindShell findShell;
+    private Set<Voxel> shell;
+
     public ArrayList<Voxel> createVoxelsFromXyzFile(String xyzFile) throws IOException {
         ArrayList<Voxel> arrayList = new ArrayList<>();
         try{
@@ -29,7 +32,8 @@ public class MakeItStandService implements CommandLineRunner {
         voxels.forEach(voxel -> {
             System.out.println(voxel);
         });
-//        System.out.println("min x: " + minX(voxels));
+        this.findShell = new FindShell(voxels);
+        this.shell = this.findShell.getShell();
     }
 
 }

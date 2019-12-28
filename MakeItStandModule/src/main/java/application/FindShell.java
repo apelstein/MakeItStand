@@ -1,13 +1,17 @@
 package application;
 
+import lombok.Getter;
+
 import java.util.*;
 
 public class FindShell {
 
     private ArrayList<Voxel> voxels;
+    @Getter
     private Set<Voxel> shell;
     public FindShell(ArrayList<Voxel> voxels){
         this.voxels = voxels;
+        this.createShell();
 
     }
 
@@ -128,32 +132,44 @@ public class FindShell {
                 filteredVoxels.add(v);
             }
         });
+        Map<Axe, Integer> initMap = new HashMap<>();
+        initMap.put(axeType1, axe1);
+        initMap.put(axeType2, axe2);
         for(Voxel v: filteredVoxels){
             if(last == -1000){
-                edges.add(new Voxel(v.getX(), axe1, axe2));
+                initMap.put(edgeType, v.get(edgeType));
+                edges.add(new Voxel(initMap));
             } else if(last+1 < v.getX()){
-                edges.add(new Voxel(v.getX(), axe1, axe2));
-                edges.add(new Voxel(last, axe1, axe2));
+                initMap.put(edgeType, v.get(edgeType));
+                edges.add(new Voxel(initMap));
+                initMap.put(edgeType, last);
+                edges.add(new Voxel(initMap));
             }
-            last = v.getX();
+            last = v.get(edgeType);
         }
 
         if(last != -1000){
-            edges.add(new Voxel(last, axe1, axe2));
+            initMap.put(edgeType, last);
+            edges.add(new Voxel(initMap));
         }
         return edges;
 
     }
 
+
+
     private void createShell(){
         shell = new HashSet<>();
         for(Axe axe: Axe.values()){
+            //sort the array by the relavent axe (i.e. X,Y,Z)
             Collections.sort(voxels, (Voxel v1, Voxel v2)->v1.get(axe) - v2.get(axe));
-            for(int x = minX(); x<= maxX(); x++){
-                for(int y = minY(); y<=maxY(); y++){
-                    shell.addAll(zEdges(x, y));
+            ArrayList<Axe> arrayOfAxes = Axe.get2OtherAxes(axe);
+            for(int axe1 = getMin(arrayOfAxes.get(0)); axe1<= getMax(arrayOfAxes.get(0)); axe1++){
+                for(int axe2 = getMin(arrayOfAxes.get(1)); axe2<=getMax(arrayOfAxes.get(1)); axe2++){
+                    shell.addAll(edges(axe, axe1, arrayOfAxes.get(0), axe2, arrayOfAxes.get(1)));
                 }
             }
+            System.out.println("added all " + axe.toString() + " edges");
         }
 
     }
