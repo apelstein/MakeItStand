@@ -1,8 +1,8 @@
 package application.config;
 
+import application.MakeItStandService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import application.MakeItStandService;
 
 @Configuration
 public class MakeItStandConfig {

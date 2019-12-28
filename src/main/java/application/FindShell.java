@@ -164,7 +164,7 @@ public class FindShell {
         for (Axis axis : Axis.values()) {
             // sort the array by the relevant axis (i.e. X,Y,Z)
             voxels.sort(Comparator.comparingInt((Voxel v) -> v.get(axis)));
-            ArrayList<Axis> arrayOfAxes = Axis.get2OtherAxes(axis);
+            List<Axis> arrayOfAxes = Axis.get2OtherAxes(axis);
             for (int axe1 = getMin(arrayOfAxes.get(0)); axe1 <= getMax(arrayOfAxes.get(0)); axe1++) {
                 for (int axe2 = getMin(arrayOfAxes.get(1)); axe2 <= getMax(arrayOfAxes.get(1)); axe2++) {
                     shell.addAll(edges(axis, axe1, arrayOfAxes.get(0), axe2, arrayOfAxes.get(1)));

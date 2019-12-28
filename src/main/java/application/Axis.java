@@ -1,16 +1,17 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public enum Axis {
     X,
     Y,
     Z;
 
-    public static ArrayList<Axis> get2OtherAxes(Axis chosenAxis){
-        ArrayList<Axis> array = new ArrayList<>();
-        for (Axis axis : Axis.values()){
-            if(chosenAxis != axis){
+    public static List<Axis> get2OtherAxes(Axis chosenAxis) {
+        List<Axis> array = new ArrayList<>();
+        for (Axis axis : Axis.values()) {
+            if (chosenAxis != axis) {
                 array.add(axis);
             }
         }
