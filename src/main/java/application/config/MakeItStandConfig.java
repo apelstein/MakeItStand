@@ -1,6 +1,8 @@
 package application.config;
 
 import application.MakeItStandService;
+import application.utils.FileUtils;
+import application.utils.MatrixUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +10,17 @@ import org.springframework.context.annotation.Configuration;
 public class MakeItStandConfig {
 
     @Bean
-    MakeItStandService makeItStandService() {
-        return new MakeItStandService();
+    MakeItStandService makeItStandService(FileUtils fileUtils, MatrixUtils matrixUtils) {
+        return new MakeItStandService(fileUtils, matrixUtils);
+    }
+
+    @Bean
+    FileUtils fileUtils() {
+        return new FileUtils();
+    }
+
+    @Bean
+    MatrixUtils matrixUtils() {
+        return new MatrixUtils();
     }
 }

@@ -1,45 +1,30 @@
 package application;
 
+import application.utils.FileUtils;
+import application.utils.MatrixUtils;
 import org.springframework.boot.CommandLineRunner;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Set;
 
 public class MakeItStandService implements CommandLineRunner {
 
-    private FindShell findShell;
-    private Set<Voxel> shell;
-    private List<Voxel> voxels;
+    private final FileUtils fileUtils;
+    private final MatrixUtils matrixUtils;
 
-    public List<Voxel> createVoxelsFromXyzFile(String xyzFile) throws IOException {
-        List<Voxel> voxels = new ArrayList<>();
-        try {
-            Files.lines(Paths.get(xyzFile)).forEach(line -> {
-                voxels.add(new Voxel(Stream.of(line.split(" ")).mapToInt(Integer::parseInt).toArray()));
-            });
-        } catch (IOException e) {
-            System.out.println(e.getMessage() + "\n"); //+ e.getLocalizedMessage() + "\n" + e.getCause().toString());
-            throw e;
-        }
-        return voxels;
-    }
-
-    public void writeVoxelsToFile(String fileName) throws IOException {
-        Files.write(Paths.get(fileName), (Iterable<? extends CharSequence>) voxels); //StandardCharsets.UTF_8
-
+    public MakeItStandService(FileUtils fileUtils, MatrixUtils matrixUtils) {
+        this.fileUtils = fileUtils;
+        this.matrixUtils = matrixUtils;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Hello");
-        voxels = createVoxelsFromXyzFile("./files/test1.xyz");
+        System.out.println("Starting MakeItStand Application");
+        List<Voxel> voxels = fileUtils.createVoxelsFromXyzFile("./files/test1.xyz");
         voxels.forEach(System.out::println);
-        findShell = new FindShell(voxels);
-        shell = findShell.getShell();
+        Set<Voxel> shell = matrixUtils.calcShellFromVoxels(voxels);
 
-        writeVoxelsToFile("voxelsEdges");
+//        writeVoxelsToFile("voxelsEdges");
     }
 
 }

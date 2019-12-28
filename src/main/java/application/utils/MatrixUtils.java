@@ -1,54 +1,45 @@
-package application;
+package application.utils;
 
-import lombok.Getter;
+import application.Axis;
+import application.Voxel;
 
 import java.util.*;
 
-public class FindShell {
+public class MatrixUtils {
 
-    private List<Voxel> voxels;
-    @Getter
-    private Set<Voxel> shell;
-
-    public FindShell(List<Voxel> voxels) {
-        this.voxels = voxels;
-        createShell();
-
-    }
-
-    public int getMax(Axis axis) {
+    public int getMax(List<Voxel> voxels, Axis axis) {
         return Collections.max(voxels, Comparator.comparingInt((Voxel v) -> v.get(axis))).get(axis);
     }
 
-    public int getMin(Axis axis) {
+    public int getMin(List<Voxel> voxels, Axis axis) {
         return Collections.min(voxels, Comparator.comparingInt((Voxel v) -> v.get(axis))).get(axis);
     }
 
-    public int maxX() {
-        return Collections.max(voxels, (Voxel v1, Voxel v2) -> v1.getX() - v2.getX()).getX();
+    public int maxX(List<Voxel> voxels) {
+        return Collections.max(voxels, Comparator.comparingInt(Voxel::getX)).getX();
     }
 
-    public int minX() {
-        return Collections.min(voxels, (Voxel v1, Voxel v2) -> v1.getX() - v2.getX()).getX();
+    public int minX(List<Voxel> voxels) {
+        return Collections.min(voxels, Comparator.comparingInt(Voxel::getX)).getX();
     }
 
-    public int maxY() {
-        return Collections.max(voxels, (Voxel v1, Voxel v2) -> v1.getY() - v2.getY()).getY();
+    public int maxY(List<Voxel> voxels) {
+        return Collections.max(voxels, Comparator.comparingInt(Voxel::getY)).getY();
     }
 
-    public int minY() {
-        return Collections.min(voxels, (Voxel v1, Voxel v2) -> v1.getY() - v2.getY()).getY();
+    public int minY(List<Voxel> voxels) {
+        return Collections.min(voxels, Comparator.comparingInt(Voxel::getY)).getY();
     }
 
-    public int maxZ() {
-        return Collections.max(voxels, (Voxel v1, Voxel v2) -> v1.getZ() - v2.getZ()).getZ();
+    public int maxZ(List<Voxel> voxels) {
+        return Collections.max(voxels, Comparator.comparingInt(Voxel::getZ)).getZ();
     }
 
-    public int minZ() {
-        return Collections.min(voxels, (Voxel v1, Voxel v2) -> v1.getZ() - v2.getZ()).getZ();
+    public int minZ(List<Voxel> voxels) {
+        return Collections.min(voxels, Comparator.comparingInt(Voxel::getZ)).getZ();
     }
 
-    public Set<Voxel> zEdges(int x, int y) {
+    public Set<Voxel> calcShellZAxis(List<Voxel> voxels, int x, int y) {
         int lastZ = -1000;
         Set<Voxel> zEdges = new HashSet<>();
         ArrayList<Voxel> filteredVoxels = new ArrayList<>();
@@ -74,7 +65,7 @@ public class FindShell {
 
     }
 
-    public Set<Voxel> yEdges(int x, int z) {
+    public Set<Voxel> calcShellYAxis(List<Voxel> voxels, int x, int z) {
         int lastY = -1000;
         Set<Voxel> yEdges = new HashSet<>();
         ArrayList<Voxel> filteredVoxels = new ArrayList<>();
@@ -100,7 +91,7 @@ public class FindShell {
 
     }
 
-    public Set<Voxel> xEdges(int y, int z) {
+    public Set<Voxel> calcShellXAxis(List<Voxel> voxels, int y, int z) {
         int lastX = -1000;
         Set<Voxel> xEdges = new HashSet<>();
         ArrayList<Voxel> filteredVoxels = new ArrayList<>();
@@ -126,18 +117,18 @@ public class FindShell {
 
     }
 
-    public Set<Voxel> edges(Axis edgeType, int axe1, Axis axisType1, int axe2, Axis axisType2) {
+    public Set<Voxel> edges(List<Voxel> voxels, Axis edgeType, int axis1, Axis axisType1, int axis2, Axis axisType2) {
         int last = -1000;
         Set<Voxel> edges = new HashSet<>();
         ArrayList<Voxel> filteredVoxels = new ArrayList<>();
         voxels.forEach(v -> {
-            if (v.get(axisType1) == axe1 && v.get(axisType2) == axe2) {
+            if (v.get(axisType1) == axis1 && v.get(axisType2) == axis2) {
                 filteredVoxels.add(v);
             }
         });
         Map<Axis, Integer> initMap = new HashMap<>();
-        initMap.put(axisType1, axe1);
-        initMap.put(axisType2, axe2);
+        initMap.put(axisType1, axis1);
+        initMap.put(axisType2, axis2);
         for (Voxel v : filteredVoxels) {
             if (last == -1000) {
                 initMap.put(edgeType, v.get(edgeType));
@@ -159,19 +150,20 @@ public class FindShell {
     }
 
 
-    private void createShell() {
-        shell = new HashSet<>();
+    public Set<Voxel> calcShellFromVoxels(List<Voxel> voxels) {
+        Set<Voxel> shell = new HashSet<>();
         for (Axis axis : Axis.values()) {
             // sort the array by the relevant axis (i.e. X,Y,Z)
             voxels.sort(Comparator.comparingInt((Voxel v) -> v.get(axis)));
             List<Axis> arrayOfAxes = Axis.get2OtherAxes(axis);
-            for (int axe1 = getMin(arrayOfAxes.get(0)); axe1 <= getMax(arrayOfAxes.get(0)); axe1++) {
-                for (int axe2 = getMin(arrayOfAxes.get(1)); axe2 <= getMax(arrayOfAxes.get(1)); axe2++) {
-                    shell.addAll(edges(axis, axe1, arrayOfAxes.get(0), axe2, arrayOfAxes.get(1)));
+            for (int axe1 = getMin(voxels, arrayOfAxes.get(0)); axe1 <= getMax(voxels, arrayOfAxes.get(0)); axe1++) {
+                for (int axe2 = getMin(voxels, arrayOfAxes.get(1)); axe2 <= getMax(voxels, arrayOfAxes.get(1)); axe2++) {
+                    shell.addAll(edges(voxels, axis, axe1, arrayOfAxes.get(0), axe2, arrayOfAxes.get(1)));
                 }
             }
             System.out.println("added all " + axis + " edges");
         }
+        return shell;
 
     }
 }
