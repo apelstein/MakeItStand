@@ -1,10 +1,11 @@
 package application.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import application.MakeItStandService;
 import application.utils.FileUtils;
 import application.utils.MatrixUtils;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MakeItStandConfig {

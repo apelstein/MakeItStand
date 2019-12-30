@@ -25,7 +25,7 @@ public class FileUtils {
         return voxels;
     }
 
-    public void writeVoxelsToFile(String fileName) throws IOException {
+    public void writeVoxelsToFile(List<Voxel> voxelsToWrite, String fileName) throws IOException {
 //        Files.write(Paths.get(fileName), (Iterable<? extends CharSequence>) voxels); //StandardCharsets.UTF_8
     }
 

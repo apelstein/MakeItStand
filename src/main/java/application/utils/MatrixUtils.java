@@ -1,6 +1,7 @@
 package application.utils;
 
 import application.Axis;
+import application.BestValuesPojo;
 import application.Voxel;
 
 import java.util.*;
@@ -165,5 +166,17 @@ public class MatrixUtils {
         }
         return shell;
 
+    }
+
+    public Voxel calcBalancePoint(List<Voxel> voxelsFromXyzFile) {
+        return null;
+    }
+
+    public Voxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
+        return null;
+    }
+
+    public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, Set<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
+        return null;
     }
 }
