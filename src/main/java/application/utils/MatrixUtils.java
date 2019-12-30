@@ -16,30 +16,6 @@ public class MatrixUtils {
         return Collections.min(voxels, Comparator.comparingInt((Voxel v) -> v.get(axis))).get(axis);
     }
 
-    public int maxX(List<Voxel> voxels) {
-        return Collections.max(voxels, Comparator.comparingInt(Voxel::getX)).getX();
-    }
-
-    public int minX(List<Voxel> voxels) {
-        return Collections.min(voxels, Comparator.comparingInt(Voxel::getX)).getX();
-    }
-
-    public int maxY(List<Voxel> voxels) {
-        return Collections.max(voxels, Comparator.comparingInt(Voxel::getY)).getY();
-    }
-
-    public int minY(List<Voxel> voxels) {
-        return Collections.min(voxels, Comparator.comparingInt(Voxel::getY)).getY();
-    }
-
-    public int maxZ(List<Voxel> voxels) {
-        return Collections.max(voxels, Comparator.comparingInt(Voxel::getZ)).getZ();
-    }
-
-    public int minZ(List<Voxel> voxels) {
-        return Collections.min(voxels, Comparator.comparingInt(Voxel::getZ)).getZ();
-    }
-
     public Set<Voxel> calcShellZAxis(List<Voxel> voxels, int x, int y) {
         int lastZ = -1000;
         Set<Voxel> zEdges = new HashSet<>();
