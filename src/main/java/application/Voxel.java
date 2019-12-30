@@ -1,12 +1,10 @@
 package application;
 
-import lombok.Data;
-import lombok.ToString;
-
 import java.util.Map;
 
+import lombok.Data;
+
 @Data
-@ToString(includeFieldNames = true)
 public class Voxel {
     private int x;
     private int y;
@@ -28,16 +26,17 @@ public class Voxel {
         map.forEach((k, v) -> {
             switch (k) {
                 case X:
-                    x = v;
+                    this.x = v;
                     break;
                 case Y:
-                    y = v;
+                    this.y = v;
                     break;
                 case Z:
-                    z = v;
+                    this.z = v;
                     break;
             }
         });
+        alpha = 1;
     }
 
     public int get(Axis axis) {
@@ -48,11 +47,14 @@ public class Voxel {
                 return y;
             case Z:
                 return z;
+            default:
+                return -1;
         }
-        return -1;
     }
 
-    public int getY() {
-        return 0;
+    @Override
+    public String toString() {
+        return this.x + " " + this.y + " " + this.z;
     }
+
 }

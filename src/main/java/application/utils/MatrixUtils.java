@@ -23,7 +23,7 @@ public class MatrixUtils {
         return Collections.min(voxels, Comparator.comparingInt((Voxel v) -> v.get(axis))).get(axis);
     }
 
-    public Set<Voxel> edges(List<Voxel> voxels, Axis edgeType, int axis1, Axis axisType1, int axis2, Axis axisType2) {
+    public Set<Voxel> calcEdgesByAxis(List<Voxel> voxels, Axis edgeType, int axis1, Axis axisType1, int axis2, Axis axisType2) {
         int last = -1000;
         Set<Voxel> edges = new HashSet<>();
         ArrayList<Voxel> filteredVoxels = new ArrayList<>();
@@ -39,7 +39,7 @@ public class MatrixUtils {
             if (last == -1000) {
                 initMap.put(edgeType, v.get(edgeType));
                 edges.add(new Voxel(initMap));
-            } else if (last + 1 < v.getX()) {
+            } else if (last + 1 < v.get(edgeType)) {
                 initMap.put(edgeType, v.get(edgeType));
                 edges.add(new Voxel(initMap));
                 initMap.put(edgeType, last);
@@ -62,9 +62,9 @@ public class MatrixUtils {
             // sort the array by the relevant axis (i.e. X,Y,Z)
             voxels.sort(Comparator.comparingInt((Voxel v) -> v.get(axis)));
             List<Axis> arrayOfAxes = Axis.get2OtherAxes(axis);
-            for (int axe1 = getMin(voxels, arrayOfAxes.get(0)); axe1 <= getMax(voxels, arrayOfAxes.get(0)); axe1++) {
-                for (int axe2 = getMin(voxels, arrayOfAxes.get(1)); axe2 <= getMax(voxels, arrayOfAxes.get(1)); axe2++) {
-                    shell.addAll(edges(voxels, axis, axe1, arrayOfAxes.get(0), axe2, arrayOfAxes.get(1)));
+            for (int axis1 = getMin(voxels, arrayOfAxes.get(0)); axis1 <= getMax(voxels, arrayOfAxes.get(0)); axis1++) {
+                for (int axis2 = getMin(voxels, arrayOfAxes.get(1)); axis2 <= getMax(voxels, arrayOfAxes.get(1)); axis2++) {
+                    shell.addAll(calcEdgesByAxis(voxels, axis, axis1, arrayOfAxes.get(0), axis2, arrayOfAxes.get(1)));
                 }
             }
             System.out.println("added all " + axis + " edges");
