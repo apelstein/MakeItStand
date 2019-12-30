@@ -1,7 +1,6 @@
 package application;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 
@@ -24,7 +23,7 @@ public class MakeItStandService implements CommandLineRunner {
         // String itemName = args[1];
         List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("./files/test1.xyz");
         voxelsFromXyzFile.forEach(System.out::println);
-        Set<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
+        List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
 //        fileUtils.writeVoxelsToFile(shell, "3DFiles/Outputs/" + itemName + "_edges.xyz");
         Voxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
         Voxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);

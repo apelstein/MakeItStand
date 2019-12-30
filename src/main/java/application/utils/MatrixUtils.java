@@ -1,10 +1,17 @@
 package application.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import application.Axis;
 import application.BestValuesPojo;
 import application.Voxel;
-
-import java.util.*;
 
 public class MatrixUtils {
 
@@ -14,84 +21,6 @@ public class MatrixUtils {
 
     public int getMin(List<Voxel> voxels, Axis axis) {
         return Collections.min(voxels, Comparator.comparingInt((Voxel v) -> v.get(axis))).get(axis);
-    }
-
-    public Set<Voxel> calcShellZAxis(List<Voxel> voxels, int x, int y) {
-        int lastZ = -1000;
-        Set<Voxel> zEdges = new HashSet<>();
-        ArrayList<Voxel> filteredVoxels = new ArrayList<>();
-        voxels.forEach(v -> {
-            if (v.getX() == x && v.getY() == y) {
-                filteredVoxels.add(v);
-            }
-        });
-        for (Voxel v : filteredVoxels) {
-            if (lastZ == -1000) {
-                zEdges.add(new Voxel(x, y, v.getZ()));
-            } else if (lastZ + 1 < v.getZ()) {
-                zEdges.add(new Voxel(x, y, v.getZ()));
-                zEdges.add(new Voxel(x, y, lastZ));
-            }
-            lastZ = v.getZ();
-        }
-
-        if (lastZ != -1000) {
-            zEdges.add(new Voxel(x, y, lastZ));
-        }
-        return zEdges;
-
-    }
-
-    public Set<Voxel> calcShellYAxis(List<Voxel> voxels, int x, int z) {
-        int lastY = -1000;
-        Set<Voxel> yEdges = new HashSet<>();
-        ArrayList<Voxel> filteredVoxels = new ArrayList<>();
-        voxels.forEach(v -> {
-            if (v.getX() == x && v.getZ() == z) {
-                filteredVoxels.add(v);
-            }
-        });
-        for (Voxel v : filteredVoxels) {
-            if (lastY == -1000) {
-                yEdges.add(new Voxel(x, v.getY(), z));
-            } else if (lastY + 1 < v.getY()) {
-                yEdges.add(new Voxel(x, v.getY(), z));
-                yEdges.add(new Voxel(x, lastY, z));
-            }
-            lastY = v.getY();
-        }
-
-        if (lastY != -1000) {
-            yEdges.add(new Voxel(x, lastY, z));
-        }
-        return yEdges;
-
-    }
-
-    public Set<Voxel> calcShellXAxis(List<Voxel> voxels, int y, int z) {
-        int lastX = -1000;
-        Set<Voxel> xEdges = new HashSet<>();
-        ArrayList<Voxel> filteredVoxels = new ArrayList<>();
-        voxels.forEach(v -> {
-            if (v.getY() == y && v.getZ() == z) {
-                filteredVoxels.add(v);
-            }
-        });
-        for (Voxel v : filteredVoxels) {
-            if (lastX == -1000) {
-                xEdges.add(new Voxel(v.getX(), y, z));
-            } else if (lastX + 1 < v.getX()) {
-                xEdges.add(new Voxel(v.getX(), y, z));
-                xEdges.add(new Voxel(lastX, y, z));
-            }
-            lastX = v.getX();
-        }
-
-        if (lastX != -1000) {
-            xEdges.add(new Voxel(lastX, y, z));
-        }
-        return xEdges;
-
     }
 
     public Set<Voxel> edges(List<Voxel> voxels, Axis edgeType, int axis1, Axis axisType1, int axis2, Axis axisType2) {
@@ -127,7 +56,7 @@ public class MatrixUtils {
     }
 
 
-    public Set<Voxel> calcShellFromVoxels(List<Voxel> voxels) {
+    public List<Voxel> calcShellFromVoxels(List<Voxel> voxels) {
         Set<Voxel> shell = new HashSet<>();
         for (Axis axis : Axis.values()) {
             // sort the array by the relevant axis (i.e. X,Y,Z)
@@ -140,7 +69,7 @@ public class MatrixUtils {
             }
             System.out.println("added all " + axis + " edges");
         }
-        return shell;
+        return new ArrayList<>(shell);
 
     }
 
@@ -152,7 +81,7 @@ public class MatrixUtils {
         return null;
     }
 
-    public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, Set<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
+    public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, List<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
         return null;
     }
 }
