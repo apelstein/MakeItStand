@@ -21,10 +21,10 @@ public class MakeItStandService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting MakeItStand Application");
         // String itemName = args[1];
-        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("./files/test1.xyz");
-        voxelsFromXyzFile.forEach(System.out::println);
+        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("/Users/ethgar.d/git/MakeItStand/files/cerverus.xyz");
+//        voxelsFromXyzFile.forEach(System.out::println);
         List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
-//        fileUtils.writeVoxelsToFile(shell, "3DFiles/Outputs/" + itemName + "_edges.xyz");
+        fileUtils.writeVoxelsToFile(shell, "/Users/ethgar.d/git/MakeItStand/files/" + "hara" + "_edges.xyz");
         Voxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
         Voxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
         BestValuesPojo bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);

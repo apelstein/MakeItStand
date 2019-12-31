@@ -1,13 +1,13 @@
 package application.utils;
 
-import application.Voxel;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import application.Voxel;
 
 public class FileUtils {
 
@@ -25,8 +25,17 @@ public class FileUtils {
         return voxels;
     }
 
-    public void writeVoxelsToFile(List<Voxel> voxelsToWrite, String fileName) throws IOException {
-//        Files.write(Paths.get(fileName), (Iterable<? extends CharSequence>) voxels); //StandardCharsets.UTF_8
+    public void writeVoxelsToFile(List<Voxel> voxelsToWrite, String fileName) {
+        voxelsToWrite.stream()
+                .map(Voxel::toString)
+                .forEach(voxel -> {
+                    try {
+                        Files.write(Paths.get(fileName), voxel.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                });
     }
 
 }
