@@ -82,7 +82,22 @@ public class MatrixUtils {
     }
 
     public Voxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
-        return null;
+        return new Voxel(
+            getAverage(voxelsFromXyzFile, Axis.X),
+            getAverage(voxelsFromXyzFile, Axis.Y),
+            getAverage(voxelsFromXyzFile, Axis.Z));
+    }
+
+    private int getAverage(List<Voxel> voxelsFromXyzFile, Axis axis) {
+        int sum = 0;
+        int count = 0;
+        for (Voxel v : voxelsFromXyzFile){
+            if(v.getAlpha() == 1){
+                sum += v.get(axis);
+                count += 1;
+            }
+        }
+        return sum/count;
     }
 
     public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, List<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
