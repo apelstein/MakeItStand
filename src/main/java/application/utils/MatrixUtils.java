@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import application.Axis;
 import application.BestValuesPojo;
@@ -74,7 +75,10 @@ public class MatrixUtils {
     }
 
     public Voxel calcBalancePoint(List<Voxel> voxelsFromXyzFile) {
-        return null;
+        int z_min = getMin(voxelsFromXyzFile, Axis.Z);
+        List<Voxel> allMinZVoxels = voxelsFromXyzFile.stream().filter(voxel -> voxel.getZ() == z_min).collect(Collectors
+            .toList());
+        return calcCenterOfMass(allMinZVoxels);
     }
 
     public Voxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
