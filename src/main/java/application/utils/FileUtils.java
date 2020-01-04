@@ -1,13 +1,14 @@
 package application.utils;
 
+import application.Voxel;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import application.Voxel;
 
 public class FileUtils {
 
@@ -26,16 +27,27 @@ public class FileUtils {
     }
 
     public void writeVoxelsToFile(List<Voxel> voxelsToWrite, String fileName) {
+        String lineBreak = "\n";
         voxelsToWrite.stream()
-                .map(Voxel::toString)
+                .map(voxel -> voxel.toString() + lineBreak)
+                .limit(1)
                 .forEach(voxel -> {
                     try {
-                        Files.write(Paths.get(fileName), voxel.getBytes());
+                        Files.write(Paths.get(fileName), voxel.getBytes(), StandardOpenOption.CREATE);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 });
+        voxelsToWrite.stream()
+                .map(voxel -> voxel.toString() + lineBreak)
+                .forEach(voxel -> {
+                    try {
+                        Files.write(Paths.get(fileName), voxel.getBytes(), StandardOpenOption.APPEND);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
     }
 
 }

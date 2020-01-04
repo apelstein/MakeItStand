@@ -1,11 +1,10 @@
 package application;
 
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
-
 import application.utils.FileUtils;
 import application.utils.MatrixUtils;
+import org.springframework.boot.CommandLineRunner;
+
+import java.util.List;
 
 public class MakeItStandService implements CommandLineRunner {
 
@@ -21,10 +20,10 @@ public class MakeItStandService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting MakeItStand Application");
         // String itemName = args[1];
-        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("/Users/ethgar.d/git/MakeItStand/files/cerverus.xyz");
+        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("files/test1.xyz");
 //        voxelsFromXyzFile.forEach(System.out::println);
         List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(shell, "/Users/ethgar.d/git/MakeItStand/files/" + "hara" + "_edges.xyz");
+        fileUtils.writeVoxelsToFile(shell, "files/test1ANSWER.xyz");
         Voxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
         Voxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
         BestValuesPojo bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);
