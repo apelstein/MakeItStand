@@ -1,18 +1,11 @@
 package application.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import application.Axis;
 import application.BestValuesPojo;
 import application.Voxel;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MatrixUtils {
 
@@ -77,30 +70,123 @@ public class MatrixUtils {
     public Voxel calcBalancePoint(List<Voxel> voxelsFromXyzFile) {
         int z_min = getMin(voxelsFromXyzFile, Axis.Z);
         List<Voxel> allMinZVoxels = voxelsFromXyzFile.stream().filter(voxel -> voxel.getZ() == z_min).collect(Collectors
-            .toList());
+                .toList());
         return calcCenterOfMass(allMinZVoxels);
     }
 
     public Voxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
         return new Voxel(
-            getAverage(voxelsFromXyzFile, Axis.X),
-            getAverage(voxelsFromXyzFile, Axis.Y),
-            getAverage(voxelsFromXyzFile, Axis.Z));
+                getAverage(voxelsFromXyzFile, Axis.X),
+                getAverage(voxelsFromXyzFile, Axis.Y),
+                getAverage(voxelsFromXyzFile, Axis.Z));
     }
 
     private int getAverage(List<Voxel> voxelsFromXyzFile, Axis axis) {
         int sum = 0;
         int count = 0;
-        for (Voxel v : voxelsFromXyzFile){
-            if(v.getAlpha() == 1){
+        for (Voxel v : voxelsFromXyzFile) {
+            if (v.getAlpha() == 1) {
                 sum += v.get(axis);
                 count += 1;
             }
         }
-        return sum/count;
+        return sum / count;
     }
 
     public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, List<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
-        return null;
+        Voxel planes_coefs = calculateCuttingPlane(initialCenterOfMass, balancePoint);
+        voxelsFromXyzFile.sort(Comparator.comparingDouble(p -> calcDistanceFromPlane(planes_coefs, (Voxel) p)).reversed());
+        return removeVoxels(voxelsFromXyzFile, shell, balancePoint, initialCenterOfMass);
+    }
+
+    private BestValuesPojo removeVoxels(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, Voxel balancePoint, Voxel initialCenterOfMass) {
+        int counter = 0;
+        Voxel best_com = null;
+        Voxel current_com = new Voxel();
+        double min_Ecom = Double.MAX_VALUE;
+        double current_Ecom;
+        int last_point_index = 0;
+        int xyz_updating_len = voxelsSortedByDistanceFromPlane.size();
+        List<Voxel> best_alpha = new ArrayList<>(voxelsSortedByDistanceFromPlane);
+        boolean flag = false;
+        for (int i = 0; i < xyz_updating_len; i++) {
+            Voxel currentVoxel = voxelsSortedByDistanceFromPlane.get(i);
+            if (!shell.contains(currentVoxel)) {
+                currentVoxel.setAlpha(0);
+                xyz_updating_len--;
+                updateCenterOfMass(current_com, currentVoxel, xyz_updating_len);
+                current_Ecom = calcECom(current_com, balancePoint);
+                if (current_Ecom < min_Ecom) {
+                    last_point_index = i;
+                    best_com = current_com;
+                    min_Ecom = current_Ecom;
+                    flag = true;
+                } else if (current_Ecom > min_Ecom && flag) {
+                    voxelsSortedByDistanceFromPlane.get(last_point_index).setAlpha(1);
+                    flag = false;
+                    best_alpha = voxelsSortedByDistanceFromPlane.subList(0, last_point_index + 1);
+                }
+                counter++;
+                if (counter % 3000 == 0 && counter != 0) {
+                    System.out.println("Deleted" + counter + "voxels, Ecom is: " + current_Ecom);
+                }
+                System.out.println("Final Ecom: " + min_Ecom);
+            }
+        }
+        return new BestValuesPojo(best_alpha, new Voxel(best_com));
+    }
+
+    private double calcECom(Voxel current_com, Voxel balancePoint) {
+        Voxel voxel = new Voxel(
+                current_com.getX() - balancePoint.getX(),
+                current_com.getY() - balancePoint.getY(),
+                0
+        );
+
+        return calcNorm(voxel);
+    }
+
+    private double calcNorm(Voxel voxel) {
+        int sum = 0;
+        for (Axis axis : Axis.values()) {
+            sum += voxel.get(axis) * voxel.get(axis);
+        }
+        return Math.sqrt(sum);
+    }
+
+    private Voxel updateCenterOfMass(Voxel current_com, Voxel currentVoxel, int xyz_updating_len) {
+        for (Axis axis : Axis.values()) {
+            current_com.set(axis, current_com.get(axis) * xyz_updating_len + 1);
+            current_com.set(axis, current_com.get(axis) - currentVoxel.get(axis));
+            current_com.set(axis, current_com.get(axis) / xyz_updating_len);
+        }
+        return current_com;
+    }
+
+    private double calcDistanceFromPlane(Voxel planes_coefs, Voxel point) {
+        double length_coef = Math.sqrt(Math.pow(planes_coefs.getX(), 2) + Math.pow(planes_coefs.getY(), 2) + Math.pow(planes_coefs.getZ(), 2));
+        double dot_point = (
+                planes_coefs.getX() * point.getX() +
+                        planes_coefs.getY() * point.getY() +
+                        planes_coefs.getZ() * point.getZ() +
+                        planes_coefs.getAlpha()
+        );
+        return dot_point / length_coef;
+    }
+
+    private Voxel calculateCuttingPlane(Voxel initialCenterOfMass, Voxel balancePoint) {
+        Voxel planes_coefs = new Voxel(
+                initialCenterOfMass.getX() - balancePoint.getX(),
+                initialCenterOfMass.getY() - balancePoint.getY(),
+                0,
+                (initialCenterOfMass.getX() * balancePoint.getX() +
+                        initialCenterOfMass.getX() * balancePoint.getX()) * -1
+        );
+        System.out.println(
+                "Center of mass: " + initialCenterOfMass +
+                        "\nBalance point: " + balancePoint +
+                        "\nCutting Plane coefs: " + planes_coefs
+        );
+        return planes_coefs;
     }
 }
