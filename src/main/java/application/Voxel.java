@@ -1,8 +1,8 @@
 package application;
 
-import java.util.Map;
-
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 public class Voxel {
@@ -20,6 +20,13 @@ public class Voxel {
         this.y = y;
         this.z = z;
         this.alpha = 1;
+    }
+
+    public Voxel(int x, int y, int z, int alpha) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.alpha = alpha;
     }
 
     public Voxel(Map<Axis, Integer> map) {
