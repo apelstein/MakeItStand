@@ -39,6 +39,7 @@ public class FileUtils {
                     }
                 });
         voxelsToWrite.stream()
+                .skip(1)
                 .map(voxel -> voxel.toString() + lineBreak)
                 .forEach(voxel -> {
                     try {
