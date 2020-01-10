@@ -15,6 +15,16 @@ public class Voxel {
         this(x[0], x[1], x[2]);
     }
 
+    public Voxel(Voxel o) {
+        if (o == null) {
+            return;
+        }
+        this.x = o.getX();
+        this.y = o.getY();
+        this.z = o.getZ();
+        this.alpha = o.getAlpha();
+    }
+
     public Voxel(int x, int y, int z) {
         this.x = x;
         this.y = y;
@@ -56,6 +66,22 @@ public class Voxel {
                 return z;
             default:
                 return -1;
+        }
+    }
+
+    public void set(Axis axis, int value) {
+        switch (axis) {
+            case X:
+                setX(value);
+                break;
+            case Y:
+                setY(value);
+                break;
+            case Z:
+                setZ(value);
+                break;
+            default:
+                break;
         }
     }
 
