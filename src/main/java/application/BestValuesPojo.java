@@ -1,8 +1,8 @@
 package application;
 
-import java.util.List;
-
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class BestValuesPojo {
@@ -10,8 +10,4 @@ public class BestValuesPojo {
     private final List<Voxel> bestAlpha;
     private final Voxel bestCenterOfMass;
 
-    public BestValuesPojo(List<Voxel> bestAlpha, Voxel bestCenterOfMass) {
-        this.bestAlpha = bestAlpha;
-        this.bestCenterOfMass = bestCenterOfMass;
-    }
 }
