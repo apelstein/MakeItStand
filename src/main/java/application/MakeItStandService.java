@@ -19,18 +19,17 @@ public class MakeItStandService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Starting MakeItStand Application");
-        // String itemName = args[1];
-        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("files/test1.xyz");
-//        voxelsFromXyzFile.forEach(System.out::println);
+        String inputName = args[0];
+        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("Inputs/" + inputName + ".xyz");
         List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(shell, "files/test1ANSWER.xyz");
+        fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.asc");
         Voxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
         Voxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
         BestValuesPojo bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);
-//        fileUtils.writeVoxelsToFile(balancePoint, "3DFiles/Outputs/" + itemName + "_balancedPoint.xyz");
-//        fileUtils.writeVoxelsToFile(bestAlphaValues.getBestCenterOfMass(), "3DFiles/Outputs/" + itemName + "_bestCoM.xyz");
-//        fileUtils.writeVoxelsToFile(bestAlphaValues.getBestAlpha(), "3DFiles/Outputs/" + itemName + "_bestAlpha.xyz");
-        System.out.printf("Finished MakeItStand Successfully");
+//        fileUtils.writeVoxelsToFile(balancePoint, "Outputs/" + inputName + "_balancedPoint.asc");
+//        fileUtils.writeVoxelsToFile(bestAlphaValues.getBestCenterOfMass(), "Outputs/" + inputName + "_bestCoM.asc");
+//        fileUtils.writeVoxelsToFile(bestAlphaValues.getBestAlpha(), "Outputs/" + inputName + "_bestAlpha.asc");
+        System.out.println("Finished MakeItStand Successfully");
     }
 
 }
