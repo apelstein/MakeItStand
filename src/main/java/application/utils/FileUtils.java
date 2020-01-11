@@ -29,6 +29,7 @@ public class FileUtils {
     public void writeVoxelsToFile(List<Voxel> voxelsToWrite, String fileName) {
         String lineBreak = "\n";
         voxelsToWrite.stream()
+                .filter(voxel -> voxel.getAlpha() == 1)
                 .map(voxel -> voxel.toString() + lineBreak)
                 .limit(1)
                 .forEach(voxel -> {
@@ -39,6 +40,7 @@ public class FileUtils {
                     }
                 });
         voxelsToWrite.stream()
+                .filter(voxel -> voxel.getAlpha() == 1)
                 .skip(1)
                 .map(voxel -> voxel.toString() + lineBreak)
                 .forEach(voxel -> {

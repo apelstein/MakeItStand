@@ -2,6 +2,7 @@ package application.utils;
 
 import application.Axis;
 import application.BestValuesPojo;
+import application.DoubleVoxel;
 import application.Voxel;
 
 import java.util.*;
@@ -67,23 +68,23 @@ public class MatrixUtils {
 
     }
 
-    public Voxel calcBalancePoint(List<Voxel> voxelsFromXyzFile) {
+    public DoubleVoxel calcBalancePoint(List<Voxel> voxelsFromXyzFile) {
         int z_min = getMin(voxelsFromXyzFile, Axis.Z);
         List<Voxel> allMinZVoxels = voxelsFromXyzFile.stream().filter(voxel -> voxel.getZ() == z_min).collect(Collectors
                 .toList());
         return calcCenterOfMass(allMinZVoxels);
     }
 
-    public Voxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
-        return new Voxel(
+    public DoubleVoxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
+        return new DoubleVoxel(
                 getAverage(voxelsFromXyzFile, Axis.X),
                 getAverage(voxelsFromXyzFile, Axis.Y),
                 getAverage(voxelsFromXyzFile, Axis.Z));
     }
 
-    private int getAverage(List<Voxel> voxelsFromXyzFile, Axis axis) {
-        int sum = 0;
-        int count = 0;
+    private double getAverage(List<Voxel> voxelsFromXyzFile, Axis axis) {
+        double sum = 0;
+        double count = 0;
         for (Voxel v : voxelsFromXyzFile) {
             if (v.getAlpha() == 1) {
                 sum += v.get(axis);
@@ -93,17 +94,17 @@ public class MatrixUtils {
         return sum / count;
     }
 
-    public BestValuesPojo calcBestValues(Voxel balancePoint, Voxel initialCenterOfMass, List<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
-        Voxel planes_coefs = calculateCuttingPlane(initialCenterOfMass, balancePoint);
+    public BestValuesPojo calcBestValues(DoubleVoxel balancePoint, DoubleVoxel initialCenterOfMass, List<Voxel> shell, List<Voxel> voxelsFromXyzFile) {
+        DoubleVoxel planes_coefs = calculateCuttingPlane(initialCenterOfMass, balancePoint);
         voxelsFromXyzFile.sort(Comparator.comparingDouble(p -> calcDistanceFromPlane(planes_coefs, (Voxel) p)).reversed());
         return removeVoxels(voxelsFromXyzFile, shell, balancePoint, initialCenterOfMass);
     }
 
-    private BestValuesPojo removeVoxels(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, Voxel balancePoint, Voxel initialCenterOfMass) {
+    private BestValuesPojo removeVoxels(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, DoubleVoxel balancePoint, DoubleVoxel initialCenterOfMass) {
         int counter = 0;
-        Voxel best_com = new Voxel();
+        DoubleVoxel best_com = new DoubleVoxel();
         Voxel currentVoxel;
-        Voxel current_com = new Voxel(initialCenterOfMass);
+        DoubleVoxel current_com = new DoubleVoxel(initialCenterOfMass);
         double min_Ecom = Double.MAX_VALUE;
         double current_Ecom;
         int last_point_index = 0;
@@ -129,16 +130,17 @@ public class MatrixUtils {
                 }
                 counter++;
                 if (counter % 3000 == 0 && counter != 0) {
-                    System.out.println("Deleted " + counter + "voxels, Ecom is: " + current_Ecom);
+                    System.out.println("Deleted " + counter + " voxels, Ecom is: " + current_Ecom);
                 }
             }
         }
         System.out.println("Final Ecom: " + min_Ecom);
-        return new BestValuesPojo(best_alpha, new Voxel(best_com));
+        return new BestValuesPojo(best_alpha, new DoubleVoxel(best_com));
+        // best_alpha.stream().filter(voxel -> voxel.getAlpha()==1).skip(24258).forEach(System.out::println)
     }
 
-    private double calcECom(Voxel current_com, Voxel balancePoint) {
-        Voxel voxel = new Voxel(
+    private double calcECom(DoubleVoxel current_com, DoubleVoxel balancePoint) {
+        DoubleVoxel voxel = new DoubleVoxel(
                 current_com.getX() - balancePoint.getX(),
                 current_com.getY() - balancePoint.getY(),
                 0
@@ -146,23 +148,23 @@ public class MatrixUtils {
         return calcNorm(voxel);
     }
 
-    private double calcNorm(Voxel voxel) {
-        int sum = 0;
+    private double calcNorm(DoubleVoxel voxel) {
+        double sum = 0;
         for (Axis axis : Axis.values()) {
-            sum += voxel.get(axis) * voxel.get(axis);
+            sum += Math.pow(voxel.get(axis), 2);
         }
         return Math.sqrt(sum);
     }
 
-    private void updateCenterOfMass(Voxel current_com, Voxel currentVoxel, int xyz_updating_len) {
+    private void updateCenterOfMass(DoubleVoxel current_com, Voxel currentVoxel, int xyz_updating_len) {
         for (Axis axis : Axis.values()) {
-            current_com.set(axis, current_com.get(axis) * xyz_updating_len + 1);
+            current_com.set(axis, current_com.get(axis) * (xyz_updating_len + 1));
             current_com.set(axis, current_com.get(axis) - currentVoxel.get(axis));
             current_com.set(axis, current_com.get(axis) / xyz_updating_len);
         }
     }
 
-    private double calcDistanceFromPlane(Voxel planes_coefs, Voxel point) {
+    private double calcDistanceFromPlane(DoubleVoxel planes_coefs, Voxel point) {
         double length_coef = Math.sqrt(Math.pow(planes_coefs.getX(), 2) + Math.pow(planes_coefs.getY(), 2) + Math.pow(planes_coefs.getZ(), 2));
         double dot_point = (
                 planes_coefs.getX() * point.getX() +
@@ -173,8 +175,8 @@ public class MatrixUtils {
         return dot_point / length_coef;
     }
 
-    private Voxel calculateCuttingPlane(Voxel initialCenterOfMass, Voxel balancePoint) {
-        Voxel planes_coefs = new Voxel(
+    private DoubleVoxel calculateCuttingPlane(DoubleVoxel initialCenterOfMass, DoubleVoxel balancePoint) {
+        DoubleVoxel planes_coefs = new DoubleVoxel(
                 initialCenterOfMass.getX() - balancePoint.getX(),
                 initialCenterOfMass.getY() - balancePoint.getY(),
                 0,

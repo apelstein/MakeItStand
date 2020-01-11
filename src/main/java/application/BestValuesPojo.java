@@ -8,6 +8,6 @@ import java.util.List;
 public class BestValuesPojo {
 
     private final List<Voxel> bestAlpha;
-    private final Voxel bestCenterOfMass;
+    private final DoubleVoxel bestCenterOfMass;
 
 }

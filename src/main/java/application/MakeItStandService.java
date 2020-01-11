@@ -4,7 +4,6 @@ import application.utils.FileUtils;
 import application.utils.MatrixUtils;
 import org.springframework.boot.CommandLineRunner;
 
-import java.util.Collections;
 import java.util.List;
 
 public class MakeItStandService implements CommandLineRunner {
@@ -24,12 +23,12 @@ public class MakeItStandService implements CommandLineRunner {
         List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("Inputs/" + inputName + ".xyz");
         List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
         fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.asc");
-        Voxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
-        Voxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
+        DoubleVoxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
+        DoubleVoxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
         BestValuesPojo bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(Collections.singletonList(balancePoint), "Outputs/" + inputName + "_balancedPoint.asc");
-        Voxel bestCenterOfMass = bestAlphaValues.getBestCenterOfMass();
-        fileUtils.writeVoxelsToFile(Collections.singletonList(bestCenterOfMass), "Outputs/" + inputName + "_bestCoM.asc");
+//        fileUtils.writeVoxelsToFile(Collections.singletonList(balancePoint), "Outputs/" + inputName + "_balancedPoint.asc");
+        DoubleVoxel bestCenterOfMass = bestAlphaValues.getBestCenterOfMass();
+//        fileUtils.writeVoxelsToFile(Collections.singletonList(bestCenterOfMass), "Outputs/" + inputName + "_bestCoM.asc");
         fileUtils.writeVoxelsToFile(bestAlphaValues.getBestAlpha(), "Outputs/" + inputName + "_bestAlpha.asc");
         System.out.println("Finished MakeItStand Successfully");
     }
