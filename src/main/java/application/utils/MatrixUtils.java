@@ -101,16 +101,17 @@ public class MatrixUtils {
 
     private BestValuesPojo removeVoxels(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, Voxel balancePoint, Voxel initialCenterOfMass) {
         int counter = 0;
-        Voxel best_com = null;
-        Voxel current_com = new Voxel();
+        Voxel best_com = new Voxel();
+        Voxel currentVoxel;
+        Voxel current_com = new Voxel(initialCenterOfMass);
         double min_Ecom = Double.MAX_VALUE;
         double current_Ecom;
         int last_point_index = 0;
         int xyz_updating_len = voxelsSortedByDistanceFromPlane.size();
         List<Voxel> best_alpha = new ArrayList<>(voxelsSortedByDistanceFromPlane);
         boolean flag = false;
-        for (int i = 0; i < xyz_updating_len; i++) {
-            Voxel currentVoxel = voxelsSortedByDistanceFromPlane.get(i);
+        for (int i = 0; i < voxelsSortedByDistanceFromPlane.size(); i++) {
+            currentVoxel = voxelsSortedByDistanceFromPlane.get(i);
             if (!shell.contains(currentVoxel)) {
                 currentVoxel.setAlpha(0);
                 xyz_updating_len--;
@@ -121,18 +122,18 @@ public class MatrixUtils {
                     best_com = current_com;
                     min_Ecom = current_Ecom;
                     flag = true;
-                } else if (current_Ecom > min_Ecom && flag) {
+                } else if ((current_Ecom > min_Ecom) && flag) {
                     voxelsSortedByDistanceFromPlane.get(last_point_index).setAlpha(1);
                     flag = false;
                     best_alpha = voxelsSortedByDistanceFromPlane.subList(0, last_point_index + 1);
                 }
                 counter++;
                 if (counter % 3000 == 0 && counter != 0) {
-                    System.out.println("Deleted" + counter + "voxels, Ecom is: " + current_Ecom);
+                    System.out.println("Deleted " + counter + "voxels, Ecom is: " + current_Ecom);
                 }
-                System.out.println("Final Ecom: " + min_Ecom);
             }
         }
+        System.out.println("Final Ecom: " + min_Ecom);
         return new BestValuesPojo(best_alpha, new Voxel(best_com));
     }
 
@@ -142,7 +143,6 @@ public class MatrixUtils {
                 current_com.getY() - balancePoint.getY(),
                 0
         );
-
         return calcNorm(voxel);
     }
 
@@ -154,13 +154,12 @@ public class MatrixUtils {
         return Math.sqrt(sum);
     }
 
-    private Voxel updateCenterOfMass(Voxel current_com, Voxel currentVoxel, int xyz_updating_len) {
+    private void updateCenterOfMass(Voxel current_com, Voxel currentVoxel, int xyz_updating_len) {
         for (Axis axis : Axis.values()) {
             current_com.set(axis, current_com.get(axis) * xyz_updating_len + 1);
             current_com.set(axis, current_com.get(axis) - currentVoxel.get(axis));
             current_com.set(axis, current_com.get(axis) / xyz_updating_len);
         }
-        return current_com;
     }
 
     private double calcDistanceFromPlane(Voxel planes_coefs, Voxel point) {
