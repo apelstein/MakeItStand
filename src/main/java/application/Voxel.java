@@ -11,6 +11,9 @@ public class Voxel {
     private int z;
     private int alpha;
 
+    public Voxel() {
+    }
+
     public Voxel(int[] x) {
         this(x[0], x[1], x[2]);
     }
