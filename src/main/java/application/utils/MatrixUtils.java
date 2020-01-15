@@ -109,7 +109,8 @@ public class MatrixUtils {
         double current_Ecom;
         int last_point_index = 0;
         int xyz_updating_len = voxelsSortedByDistanceFromPlane.size();
-        List<Voxel> best_alpha = new ArrayList<>(voxelsSortedByDistanceFromPlane);
+        List<Voxel> best_alpha = new ArrayList<>();
+        voxelsSortedByDistanceFromPlane.forEach(voxel -> best_alpha.add(new Voxel(voxel)));
         boolean flag = false;
         for (int i = 0; i < voxelsSortedByDistanceFromPlane.size(); i++) {
             currentVoxel = voxelsSortedByDistanceFromPlane.get(i);
@@ -126,7 +127,12 @@ public class MatrixUtils {
                 } else if ((current_Ecom > min_Ecom) && flag) {
                     voxelsSortedByDistanceFromPlane.get(last_point_index).setAlpha(1);
                     flag = false;
-                    best_alpha = voxelsSortedByDistanceFromPlane.subList(0, last_point_index + 1);
+                    for (int j = 0; j < last_point_index; j++) {
+                        best_alpha.set(j, new Voxel(voxelsSortedByDistanceFromPlane.get(j)));
+                        if (j == last_point_index - 1) {
+                            System.out.println("hi");
+                        }
+                    }
                 }
                 counter++;
                 if (counter % 3000 == 0 && counter != 0) {
@@ -180,9 +186,9 @@ public class MatrixUtils {
                 initialCenterOfMass.getX() - balancePoint.getX(),
                 initialCenterOfMass.getY() - balancePoint.getY(),
                 0,
-                (initialCenterOfMass.getX() * balancePoint.getX() +
-                        initialCenterOfMass.getX() * balancePoint.getX()) * -1
+                0
         );
+        planes_coefs.setAlpha((planes_coefs.getX() * balancePoint.getX() + planes_coefs.getY() * balancePoint.getY()) * -1);
         System.out.println(
                 "Center of mass: " + initialCenterOfMass +
                         "\nBalance point: " + balancePoint +
