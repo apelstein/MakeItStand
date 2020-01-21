@@ -22,14 +22,11 @@ public class MakeItStandService implements CommandLineRunner {
         String inputName = args[0];
         List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("Inputs/" + inputName + ".xyz");
         List<Voxel> shell = matrixUtils.calcShellFromVoxels(voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.asc");
+        fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.xyz");
         DoubleVoxel balancePoint = matrixUtils.calcBalancePoint(voxelsFromXyzFile);
         DoubleVoxel initialCenterOfMass = matrixUtils.calcCenterOfMass(voxelsFromXyzFile);
-        BestValuesPojo bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);
-//        fileUtils.writeVoxelsToFile(Collections.singletonList(balancePoint), "Outputs/" + inputName + "_balancedPoint.asc");
-        DoubleVoxel bestCenterOfMass = bestAlphaValues.getBestCenterOfMass();
-//        fileUtils.writeVoxelsToFile(Collections.singletonList(bestCenterOfMass), "Outputs/" + inputName + "_bestCoM.asc");
-        fileUtils.writeVoxelsToFile(bestAlphaValues.getBestAlpha(), "Outputs/" + inputName + "_bestAlpha.asc");
+        List<Voxel> bestAlphaValues = matrixUtils.calcBestValues(balancePoint, initialCenterOfMass, shell, voxelsFromXyzFile);
+        fileUtils.writeVoxelsToFile(bestAlphaValues, "Outputs/" + inputName + "_bestAlpha.xyz");
         System.out.println("Finished MakeItStand Successfully");
     }
 
