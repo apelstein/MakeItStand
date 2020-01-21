@@ -17,14 +17,16 @@ public class BestAlphaCalculator {
         DoubleVoxel balancePoint = linearAlgebraUtils.calcBalancePoint(voxelsFromXyzFile);
         DoubleVoxel initialCenterOfMass = linearAlgebraUtils.calcCenterOfMass(voxelsFromXyzFile);
         DoubleVoxel cuttingPlane = linearAlgebraUtils.calculateCuttingPlane(initialCenterOfMass, balancePoint);
-        voxelsFromXyzFile.sort(Comparator.comparingDouble(p -> linearAlgebraUtils.calcDistanceFromPlane(cuttingPlane, (Voxel) p)).reversed());
-        return optimize(voxelsFromXyzFile, shell, balancePoint, initialCenterOfMass);
+        voxelsFromXyzFile.sort(
+                Comparator.comparingDouble(p -> linearAlgebraUtils.calcDistanceBetweenPointAndPlane(cuttingPlane, (Voxel) p))
+                        .reversed());
+        return optimize(voxelsFromXyzFile, shell, balancePoint, initialCenterOfMass, cuttingPlane);
     }
 
-    private List<Voxel> optimize(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, DoubleVoxel balancePoint, DoubleVoxel initialCenterOfMass) {
+    private List<Voxel> optimize(List<Voxel> voxelsSortedByDistanceFromPlane, List<Voxel> shell, DoubleVoxel balancePoint, DoubleVoxel initialCenterOfMass, DoubleVoxel cuttingPlane) {
         Voxel currentVoxel;
         DoubleVoxel currentCenterOfMass = new DoubleVoxel(initialCenterOfMass);
-        double minEcon = Double.MAX_VALUE;
+        double minEcom = Double.MAX_VALUE;
         double currentEcom;
         int bestAlphaIndex = 0;
         int len = voxelsSortedByDistanceFromPlane.size();
@@ -33,14 +35,17 @@ public class BestAlphaCalculator {
         for (int i = 0; i < voxelsSortedByDistanceFromPlane.size(); i++) {
             currentVoxel = voxelsSortedByDistanceFromPlane.get(i);
             if (!shell.contains(currentVoxel)) {
+                if (linearAlgebraUtils.calcDistanceBetweenPointAndPlane(cuttingPlane, currentVoxel) <= 0.0) {
+                    break;
+                }
                 currentVoxel.setAlpha(0);
                 len--;
                 updateCenterOfMass(currentCenterOfMass, currentVoxel, len);
                 currentEcom = calcECom(currentCenterOfMass, balancePoint);
-                if (currentEcom < minEcon) {
+                if (currentEcom < minEcom) {
                     bestAlphaIndex = i;
-                    minEcon = currentEcom;
-                } else if (currentEcom > minEcon) {
+                    minEcom = currentEcom;
+                } else if (currentEcom > minEcom) {
                     voxelsSortedByDistanceFromPlane.get(bestAlphaIndex).setAlpha(1);
                     for (int j = 0; j < bestAlphaIndex; j++) {
                         bestAlpha.set(j, new Voxel(voxelsSortedByDistanceFromPlane.get(j)));
@@ -56,7 +61,7 @@ public class BestAlphaCalculator {
         DoubleVoxel voxel = new DoubleVoxel(
                 currentCenterOfMass.getX() - balancePoint.getX(),
                 currentCenterOfMass.getY() - balancePoint.getY(),
-                0
+                currentCenterOfMass.getZ() - balancePoint.getZ()
         );
         return linearAlgebraUtils.calcNorm(voxel);
     }

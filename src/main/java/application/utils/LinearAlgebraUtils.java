@@ -49,25 +49,25 @@ public class LinearAlgebraUtils {
         return Math.sqrt(sum);
     }
 
-    public double calcDistanceFromPlane(DoubleVoxel doubleVoxel, Voxel point) {
-        double distance = Math.sqrt(Math.pow(doubleVoxel.getX(), 2) + Math.pow(doubleVoxel.getY(), 2) + Math.pow(doubleVoxel.getZ(), 2));
+    public double calcDistanceBetweenPointAndPlane(DoubleVoxel cuttingPlane, Voxel point) {
+        double norm = Math.sqrt(Math.pow(cuttingPlane.getX(), 2) + Math.pow(cuttingPlane.getY(), 2) + Math.pow(cuttingPlane.getZ(), 2));
         double distanceFromPoint = (
-                doubleVoxel.getX() * point.getX() +
-                        doubleVoxel.getY() * point.getY() +
-                        doubleVoxel.getZ() * point.getZ() +
-                        doubleVoxel.getAlpha()
+                cuttingPlane.getX() * point.getX() +
+                        cuttingPlane.getY() * point.getY() +
+                        cuttingPlane.getZ() * point.getZ() +
+                        cuttingPlane.getAlpha()
         );
-        return distanceFromPoint / distance;
+        return distanceFromPoint / norm;
     }
 
     public DoubleVoxel calculateCuttingPlane(DoubleVoxel initialCenterOfMass, DoubleVoxel balancePoint) {
-        DoubleVoxel doubleVoxel = new DoubleVoxel(
+        DoubleVoxel planeCoefficients = new DoubleVoxel(
                 initialCenterOfMass.getX() - balancePoint.getX(),
                 initialCenterOfMass.getY() - balancePoint.getY(),
                 0,
                 0
         );
-        doubleVoxel.setAlpha((doubleVoxel.getX() * balancePoint.getX() + doubleVoxel.getY() * balancePoint.getY()) * -1);
-        return doubleVoxel;
+        planeCoefficients.setAlpha((planeCoefficients.getX() * balancePoint.getX() + planeCoefficients.getY() * balancePoint.getY()) * -1);
+        return planeCoefficients;
     }
 }
