@@ -24,12 +24,12 @@ public class LinearAlgebraUtils {
 
     public DoubleVoxel calcCenterOfMass(List<Voxel> voxelsFromXyzFile) {
         return new DoubleVoxel(
-                calcVoxelsByAxis(voxelsFromXyzFile, Axis.X),
-                calcVoxelsByAxis(voxelsFromXyzFile, Axis.Y),
-                calcVoxelsByAxis(voxelsFromXyzFile, Axis.Z));
+                calcAverage(voxelsFromXyzFile, Axis.X),
+                calcAverage(voxelsFromXyzFile, Axis.Y),
+                calcAverage(voxelsFromXyzFile, Axis.Z));
     }
 
-    private double calcVoxelsByAxis(List<Voxel> voxelsFromXyzFile, Axis axis) {
+    private double calcAverage(List<Voxel> voxelsFromXyzFile, Axis axis) {
         double sum = 0;
         double count = 0;
         for (Voxel v : voxelsFromXyzFile) {
