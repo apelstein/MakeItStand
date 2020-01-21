@@ -3,6 +3,7 @@ package application;
 import application.utils.BestAlphaCalculator;
 import application.utils.FileUtils;
 import application.utils.ShellCalculator;
+import application.utils.Voxel;
 import org.springframework.boot.CommandLineRunner;
 
 import java.util.List;
@@ -23,11 +24,11 @@ public class MakeItStandService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting MakeItStand Application");
         String inputName = args[0];
-        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile("Inputs/" + inputName + ".xyz");
+        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile(inputName);
         List<Voxel> shell = shellCalculator.calcShellFromVoxels(voxelsFromXyzFile);
         fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.xyz");
         List<Voxel> bestAlphaValues = bestAlphaCalculator.calcBestAlpha(shell, voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(bestAlphaValues, "Outputs/" + inputName + "_bestAlpha.xyz");
+        fileUtils.writeVoxelsToFile(bestAlphaValues, inputName + "_bestAlpha.xyz");
         System.out.println("Finished MakeItStand Successfully");
     }
 

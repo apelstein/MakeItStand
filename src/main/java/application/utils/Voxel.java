@@ -1,4 +1,4 @@
-package application;
+package application.utils;
 
 import lombok.Data;
 

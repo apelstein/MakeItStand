@@ -1,8 +1,5 @@
 package application.utils;
 
-import application.Axis;
-import application.Voxel;
-
 import java.util.*;
 
 public class ShellCalculator {

@@ -1,9 +1,5 @@
 package application.utils;
 
-import application.Axis;
-import application.DoubleVoxel;
-import application.Voxel;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
