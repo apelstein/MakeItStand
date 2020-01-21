@@ -20,8 +20,8 @@ public class BestAlphaCalculator {
         System.out.println("Starting to calculate best alpha values");
         DoubleVoxel balancePoint = linearAlgebraUtils.calcBalancePoint(voxelsFromXyzFile);
         DoubleVoxel initialCenterOfMass = linearAlgebraUtils.calcCenterOfMass(voxelsFromXyzFile);
-        DoubleVoxel doubleVoxel = linearAlgebraUtils.calculateCuttingPlane(initialCenterOfMass, balancePoint);
-        voxelsFromXyzFile.sort(Comparator.comparingDouble(p -> linearAlgebraUtils.calcDistanceFromPlane(doubleVoxel, (Voxel) p)).reversed());
+        DoubleVoxel cuttingPlane = linearAlgebraUtils.calculateCuttingPlane(initialCenterOfMass, balancePoint);
+        voxelsFromXyzFile.sort(Comparator.comparingDouble(p -> linearAlgebraUtils.calcDistanceFromPlane(cuttingPlane, (Voxel) p)).reversed());
         return optimize(voxelsFromXyzFile, shell, balancePoint, initialCenterOfMass);
     }
 
