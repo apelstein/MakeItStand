@@ -44,7 +44,7 @@ public class BestAlphaCalculator {
                 if (currentEcom < minEcon) {
                     bestAlphaIndex = i;
                     minEcon = currentEcom;
-                } else if ((currentEcom > minEcon)) {
+                } else if (currentEcom > minEcon) {
                     voxelsSortedByDistanceFromPlane.get(bestAlphaIndex).setAlpha(1);
                     for (int j = 0; j < bestAlphaIndex; j++) {
                         bestAlpha.set(j, new Voxel(voxelsSortedByDistanceFromPlane.get(j)));
