@@ -20,7 +20,7 @@ public class FileUtils {
                             .mapToInt(Integer::parseInt)
                             .toArray())));
         } catch (IOException e) {
-            System.out.println(e.getMessage() + "\n"); //+ e.getLocalizedMessage() + "\n" + e.getCause().toString());
+            System.out.println("cannot create voxels from file, " + e.getMessage());
             throw e;
         }
         return voxels;
