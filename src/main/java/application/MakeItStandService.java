@@ -24,9 +24,9 @@ public class MakeItStandService implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting MakeItStand Application");
         String inputName = args[0];
-        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile(inputName);
+        List<Voxel> voxelsFromXyzFile = fileUtils.createVoxelsFromXyzFile(inputName + ".xyz");
         List<Voxel> shell = shellCalculator.calcShellFromVoxels(voxelsFromXyzFile);
-        fileUtils.writeVoxelsToFile(shell, "Outputs/" + inputName + "_shell.xyz");
+        fileUtils.writeVoxelsToFile(shell, inputName + "_shell.xyz");
         List<Voxel> bestAlphaValues = bestAlphaCalculator.calcBestAlpha(shell, voxelsFromXyzFile);
         fileUtils.writeVoxelsToFile(bestAlphaValues, inputName + "_bestAlpha.xyz");
         System.out.println("Finished MakeItStand Successfully");
